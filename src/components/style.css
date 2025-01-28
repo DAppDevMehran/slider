@@ -54,3 +54,7 @@
 .inactive-indicator {
   background-color: gray;
 }
+
+.hide-current-image {
+  display: none;
+}

@@ -1,6 +1,5 @@
-import { useEffect } from "react";
-import { useState } from "react";
-import { BsArrorRightCircleFill, BsArrowLeftCircleFill } from "react-icons/bs";
+import { useEffect, useState } from "react";
+import { BsArrowRightCircleFill, BsArrowLeftCircleFill } from "react-icons/bs";
 
 import "./style.css";
 
@@ -27,12 +26,12 @@ export default function Slider({ url, limit = 5, page = 1 }) {
     }
   }
 
-  function handlePrevius() {
+  function handlePrevious() {
     setCurrentSlide(currentSlide === 0 ? images.length - 1 : currentSlide - 1);
   }
 
   function handleNext() {
-    setCurrentSlide(currentSlide === images.length ? 0 : currentSlide + 1);
+    setCurrentSlide(currentSlide === images.length - 1 ? 0 : currentSlide + 1);
   }
 
   useEffect(() => {
@@ -42,23 +41,23 @@ export default function Slider({ url, limit = 5, page = 1 }) {
   }, [url]);
 
   if (loading) {
-    return <div>Loading data please wait</div>;
+    return <div>Loading data, please wait...</div>;
   }
 
   console.log(images);
 
   if (errorMsg !== null) {
-    return <div>We have a error: {errorMsg}</div>;
+    return <div>We have an error: {errorMsg}</div>;
   }
 
   return (
     <div className="container">
       <BsArrowLeftCircleFill
-        onClick={handlePrevius}
+        onClick={handlePrevious}
         className="arrow arrow-left"
       />
       {images && images.length > 0
-        ? images.map((imageItem) => (
+        ? images.map((imageItem, index) => (
             <img
               key={imageItem.id}
               alt={imageItem.download_url}
@@ -85,7 +84,7 @@ export default function Slider({ url, limit = 5, page = 1 }) {
                     ? "current-indicator"
                     : "current-indicator inactive-indicator"
                 }
-                onClick={() => currentSlide(index)}
+                onClick={() => setCurrentSlide(index)}
               ></button>
             ))
           : null}
