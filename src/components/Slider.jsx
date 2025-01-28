@@ -9,44 +9,51 @@ export default function Slider({ url, limit = 5, page = 1 }) {
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  async function fetchImages(url) {
-    try {
-      setLoading(true);
+  // Function to fetch images
+  const fetchImages = async () => {
+    setLoading(true);
+    setErrorMsg(null); // Reset error message on each fetch
 
+    try {
       const response = await fetch(`${url}?page=${page}&limit=${limit}`);
       const data = await response.json();
 
-      if (data) {
+      if (Array.isArray(data) && data.length > 0) {
         setImages(data);
-        setLoading(false);
+      } else {
+        setErrorMsg("No images found.");
       }
     } catch (e) {
       setErrorMsg(e.message);
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
-  function handlePrevious() {
-    setCurrentSlide(currentSlide === 0 ? images.length - 1 : currentSlide - 1);
-  }
+  // Handlers for navigation
+  const handlePrevious = () => {
+    setCurrentSlide((prevSlide) =>
+      prevSlide === 0 ? images.length - 1 : prevSlide - 1
+    );
+  };
 
-  function handleNext() {
-    setCurrentSlide(currentSlide === images.length - 1 ? 0 : currentSlide + 1);
-  }
+  const handleNext = () => {
+    setCurrentSlide((prevSlide) =>
+      prevSlide === images.length - 1 ? 0 : prevSlide + 1
+    );
+  };
 
+  // Fetch images when the URL, page, or limit changes
   useEffect(() => {
-    if (url !== "") {
-      fetchImages(url);
-    }
-  }, [url]);
+    if (url) fetchImages();
+  }, [url, page, limit]);
 
+  // Render loading, error, or slider
   if (loading) {
     return <div>Loading data, please wait...</div>;
   }
 
-  console.log(images);
-
-  if (errorMsg !== null) {
+  if (errorMsg) {
     return <div>We have an error: {errorMsg}</div>;
   }
 
@@ -56,38 +63,31 @@ export default function Slider({ url, limit = 5, page = 1 }) {
         onClick={handlePrevious}
         className="arrow arrow-left"
       />
-      {images && images.length > 0
-        ? images.map((imageItem, index) => (
-            <img
-              key={imageItem.id}
-              alt={imageItem.download_url}
-              src={imageItem.download_url}
-              className={
-                currentSlide === index
-                  ? "current-image"
-                  : "current-image hide-current-image"
-              }
-            />
-          ))
-        : null}
+
+      {images.length > 0 && (
+        <img
+          key={images[currentSlide].id}
+          alt={images[currentSlide].download_url}
+          src={images[currentSlide].download_url}
+          className="current-image"
+        />
+      )}
+
       <BsArrowRightCircleFill
         onClick={handleNext}
         className="arrow arrow-right"
       />
+
       <span className="circle-indicators">
-        {images && images.length > 0
-          ? images.map((_, index) => (
-              <button
-                key={index}
-                className={
-                  currentSlide === index
-                    ? "current-indicator"
-                    : "current-indicator inactive-indicator"
-                }
-                onClick={() => setCurrentSlide(index)}
-              ></button>
-            ))
-          : null}
+        {images.map((_, index) => (
+          <button
+            key={index}
+            className={`current-indicator ${
+              currentSlide === index ? "" : "inactive-indicator"
+            }`}
+            onClick={() => setCurrentSlide(index)}
+          />
+        ))}
       </span>
     </div>
   );
