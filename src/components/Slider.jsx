@@ -10,7 +10,7 @@ export default function Slider({ url, limit = 5, page = 1 }) {
   const [loading, setLoading] = useState(false);
 
   // Function to fetch images
-  const fetchImages = async () => {
+  async function fetchImages() {
     setLoading(true);
     setErrorMsg(null); // Reset error message on each fetch
 
@@ -28,7 +28,7 @@ export default function Slider({ url, limit = 5, page = 1 }) {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   // Handlers for navigation
   function handlePrevious() {
