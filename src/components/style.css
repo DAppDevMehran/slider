@@ -47,14 +47,6 @@
   cursor: pointer;
 }
 
-.update-current-image {
-  display: none;
-}
-
 .inactive-indicator {
   background-color: gray;
-}
-
-.hide-current-image {
-  display: none;
 }

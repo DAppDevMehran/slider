@@ -31,17 +31,17 @@ export default function Slider({ url, limit = 5, page = 1 }) {
   };
 
   // Handlers for navigation
-  const handlePrevious = () => {
+  function handlePrevious() {
     setCurrentSlide((prevSlide) =>
       prevSlide === 0 ? images.length - 1 : prevSlide - 1
     );
-  };
+  }
 
-  const handleNext = () => {
+  function handleNext() {
     setCurrentSlide((prevSlide) =>
       prevSlide === images.length - 1 ? 0 : prevSlide + 1
     );
-  };
+  }
 
   // Fetch images when the URL, page, or limit changes
   useEffect(() => {
